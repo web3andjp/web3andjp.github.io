@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Peso Jack's Treasure Hunt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      font-family: "Rockwell", "Clarendon", "Century Schoolbook", "Times New Roman", serif;
+      background: #1b120a;
+      color: #f4e9d5;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.6rem;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(217, 119, 6, 0.25), transparent 40%),
+        radial-gradient(circle at 80% 10%, rgba(217, 87, 24, 0.18), transparent 35%),
+        linear-gradient(135deg, #2b1a0f 0%, #160d07 60%, #0c0805 100%);
+      background-attachment: fixed;
+    }
+
+    .game-shell {
+      width: min(960px, 100%);
+      background: linear-gradient(160deg, rgba(53, 33, 21, 0.92), rgba(36, 23, 15, 0.95));
+      border: 2px solid #8b5a2b;
+      border-radius: 18px;
+      padding: 2.1rem 1.6rem 2.5rem;
+      box-shadow:
+        0 18px 50px rgba(0, 0, 0, 0.55),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-shell::before,
+    .game-shell::after {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px dashed rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+
+    h1 {
+      margin: 0;
+      text-align: center;
+      letter-spacing: 0.16em;
+      font-size: 1.55rem;
+      text-transform: uppercase;
+      color: #fcd34d;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #f1d6a7;
+      margin: 0.55rem 0 1.6rem;
+      font-size: 0.97rem;
+      letter-spacing: 0.05em;
+    }
+
+    .panel {
+      background: radial-gradient(circle at 35% 20%, rgba(255, 255, 255, 0.06), transparent 45%),
+        linear-gradient(180deg, #2a1a11 0%, #1c120c 100%);
+      border: 1px solid #8b5a2b;
+      border-radius: 14px;
+      padding: 1.35rem 1.15rem;
+      box-shadow:
+        inset 0 0 28px rgba(0, 0, 0, 0.45),
+        0 10px 18px rgba(0, 0, 0, 0.35);
+      margin-bottom: 0;
+    }
+
+    .label {
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: #e2c7a1;
+      font-size: 0.78rem;
+      margin-bottom: 0.65rem;
+      text-align: center;
+    }
+
+    #phrase {
+      display: block;
+      text-align: center;
+      font-size: 1.4rem;
+      letter-spacing: 0.38em;
+      line-height: 1.8;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      color: #fdf3d7;
+    }
+
+    .letters {
+      margin-top: 1.45rem;
+    }
+
+    #letters {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 0.5rem;
+      justify-items: center;
+    }
+
+    @media (min-width: 640px) {
+      #letters {
+        grid-template-columns: repeat(9, minmax(0, 1fr));
+      }
+    }
+
+    .letter {
+      width: 2.35rem;
+      height: 2.35rem;
+      border-radius: 8px;
+      border: 1px solid #c08445;
+      background: linear-gradient(145deg, #3a2416, #29170f);
+      color: #f8e2b8;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+      box-shadow:
+        0 6px 14px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .letter:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: #fbbf24;
+      background: linear-gradient(145deg, #4a2d18, #321b0f);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
+    }
+
+    .letter:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.6);
+    }
+
+    .letter:disabled {
+      background: #1c120d;
+      color: #c4a076;
+      border-color: #8b5a2b;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .status-row {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    #status {
+      color: #f4e9d5;
+      font-size: 0.98rem;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    #status.solved {
+      color: #fcd34d;
+      font-weight: 800;
+      text-shadow: 0 0 14px rgba(252, 211, 77, 0.4);
+    }
+
+    #reset {
+      padding: 0.5rem 1.5rem;
+      border-radius: 999px;
+      border: 1px solid #c08445;
+      background: linear-gradient(135deg, #fbbf24, #d97706);
+      color: #1b120a;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      box-shadow: 0 12px 28px rgba(217, 119, 6, 0.45);
+      transition: transform 0.1s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+
+    #reset:hover {
+      filter: brightness(1.04);
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(217, 119, 6, 0.55);
+    }
+
+    #reset:active {
+      transform: translateY(0);
+      box-shadow: 0 10px 20px rgba(217, 119, 6, 0.48);
+    }
+
+    .tv-frame {
+      width: min(980px, 100%);
+      margin: 0 auto 1.4rem;
+      background: linear-gradient(180deg, #3d2a1b 0%, #24160e 100%);
+      border: 2px solid #8b5a2b;
+      border-radius: 24px;
+      padding: 1rem 1.2rem 1.4rem;
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.55),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      position: relative;
+    }
+
+    .tv-frame::after {
+      content: "";
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fcd34d, #d97706);
+      border: 2px solid #8b5a2b;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+    }
+
+    .tv-screen {
+      background: radial-gradient(ellipse at center, rgba(14, 9, 6, 0.8) 0%, rgba(8, 5, 3, 0.95) 70%), #0e0906;
+      border: 2px solid #8b5a2b;
+      border-radius: 14px;
+      height: 240px;
+      overflow: hidden;
+      padding: 0;
+      position: relative;
+      box-shadow:
+        inset 0 0 24px rgba(0, 0, 0, 0.55),
+        0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .tv-title {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      color: #fcd34d;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+      z-index: 3;
+      animation: titleFade 3s linear forwards, titleReturn 3s linear forwards 22s;
+      pointer-events: none;
+    }
+
+    @keyframes titleFade {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes titleReturn {
+      0% {
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .story-scroll {
+      position: absolute;
+      width: calc(100% - 2rem);
+      left: 1rem;
+      top: 100%;
+      animation: scroll-story 80s linear infinite;
+      animation-delay: 32s;
+      animation-fill-mode: forwards;
+      opacity: 0;
+      font-size: 1.08rem;
+      line-height: 1.6;
+      color: #f4e9d5;
+      z-index: 1;
+      transition: opacity 0.8s ease;
+    }
+
+    .story-scroll.fade-out {
+      opacity: 0;
+      animation-play-state: paused;
+    }
+
+    .story-scroll.paused {
+      animation-play-state: paused;
+    }
+
+    .story-controls {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.65rem;
+      justify-content: flex-start;
+    }
+
+    .story-btn {
+      padding: 0.35rem 0.9rem;
+      border-radius: 10px;
+      border: 1px solid #c08445;
+      background: linear-gradient(135deg, #fcd34d, #d97706);
+      color: #1b120a;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(217, 119, 6, 0.35);
+      transition: transform 0.1s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+
+    .story-btn:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(217, 119, 6, 0.45);
+    }
+
+    .story-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 16px rgba(217, 119, 6, 0.4);
+    }
+
+    .pixel-scene {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      background: linear-gradient(180deg, #f59e0b 0%, #fcd34d 35%, #f4e9d5 45%, #d1b59a 65%, #8b5a2b 100%);
+      opacity: 1;
+      pointer-events: none;
+      display: grid;
+      place-items: center;
+      z-index: 4;
+      animation: sceneFade 1.5s linear forwards;
+      animation-delay: 18s;
+    }
+
+    .pixel-sprite {
+      position: absolute;
+      width: 200px;
+      height: 190px;
+      background: url("cowboy-horse.png") center/contain no-repeat;
+      image-rendering: pixelated;
+      animation: rideAcross 14s linear forwards;
+      animation-delay: 2s;
+      animation-fill-mode: forwards;
+      opacity: 1;
+      top: 55%;
+      left: 50%;
+      z-index: 5;
+    }
+
+    .tv-blackout {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      z-index: 6;
+      pointer-events: none;
+    }
+
+    .tv-blackout.show {
+      opacity: 1;
+    }
+
+    .guitar-overlay {
+      position: absolute;
+      inset: 0;
+      background: #000 url("guitar.png") center/contain no-repeat;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      z-index: 7;
+      pointer-events: none;
+    }
+
+    .guitar-overlay.show {
+      opacity: 1;
+    }
+
+    .desert-sun {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      width: 90px;
+      height: 90px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fef08a, #fbbf24 60%, rgba(217, 119, 6, 0.7) 100%);
+      box-shadow: 0 0 60px rgba(251, 191, 36, 0.45);
+    }
+
+    .cactus {
+      position: absolute;
+      bottom: 18px;
+      width: 14px;
+      height: 52px;
+      background: #166534;
+      border-radius: 6px;
+    }
+
+    .cactus::before,
+    .cactus::after {
+      content: "";
+      position: absolute;
+      background: #166534;
+      border-radius: 6px;
+    }
+
+    .cactus::before {
+      width: 10px;
+      height: 28px;
+      left: -10px;
+      top: 16px;
+    }
+
+    .cactus::after {
+      width: 10px;
+      height: 22px;
+      right: -10px;
+      top: 10px;
+    }
+
+    .rock {
+      position: absolute;
+      bottom: 12px;
+      width: 28px;
+      height: 16px;
+      background: #8b5a2b;
+      border-radius: 10px;
+      box-shadow: 18px 6px #a16207, -12px 4px #a16207;
+      opacity: 0.9;
+    }
+
+    @keyframes rideAcross {
+      0% {
+        transform: translate(-380px, -50%);
+        opacity: 1;
+      }
+      80% {
+        transform: translate(380px, -50%);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(460px, -50%);
+        opacity: 0;
+      }
+    }
+
+    @keyframes sceneFade {
+      0% {
+        opacity: 1;
+      }
+      80% {
+        opacity: 0.5;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes scroll-story {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-220%);
+        opacity: 1;
+      }
+    }
+
+    .scoreboard {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin: 1rem 0 1.3rem;
+    }
+
+    .cowpoke {
+      background: linear-gradient(180deg, rgba(58, 34, 22, 0.8), rgba(42, 26, 18, 0.9));
+      border: 1px solid #8b5a2b;
+      border-radius: 12px;
+      padding: 0.75rem 0.85rem;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      transition: transform 0.1s ease, box-shadow 0.15s ease;
+    }
+
+    .cowpoke.active-player {
+      box-shadow:
+        0 10px 22px rgba(0, 0, 0, 0.4),
+        inset 0 0 0 1px rgba(252, 211, 77, 0.35);
+      transform: translateY(-2px);
+      border-color: #fcd34d;
+      background: linear-gradient(180deg, rgba(75, 44, 28, 0.95), rgba(58, 34, 22, 0.95));
+    }
+
+    .cowpoke-label {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #e2c7a1;
+      font-size: 0.78rem;
+      margin-bottom: 0.35rem;
+      text-align: center;
+    }
+
+    .cowpoke-score {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #fcd34d;
+      text-align: center;
+    }
+
+    .wheel-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 0.6rem;
+    }
+
+    @media (min-width: 780px) {
+      .wheel-row {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+
+    .wheel-wrapper {
+      position: relative;
+      width: min(360px, 100%);
+      margin: 0 auto;
+      aspect-ratio: 1 / 1;
+      display: grid;
+      place-items: center;
+    }
+
+    #wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid #8b5a2b;
+      background: #0f0a07;
+      transition: transform 0.2s ease;
+    }
+
+    .wheel-center {
+      position: absolute;
+      width: 26%;
+      height: 26%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fcd34d, #d97706);
+      border: 2px solid #8b5a2b;
+      display: grid;
+      place-items: center;
+      color: #1b120a;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+      pointer-events: none;
+    }
+
+    .pointer {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fcd34d;
+      font-size: 1.4rem;
+      text-shadow: 0 0 12px rgba(0, 0, 0, 0.55);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .wheel-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spin-btn {
+      padding: 0.65rem 1.4rem;
+      border-radius: 12px;
+      border: 1px solid #c08445;
+      background: linear-gradient(135deg, #fcd34d, #d97706);
+      color: #1b120a;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      box-shadow: 0 12px 22px rgba(217, 119, 6, 0.4);
+      transition: transform 0.1s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+
+    .spin-btn:hover:not(:disabled) {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+      box-shadow: 0 16px 28px rgba(217, 119, 6, 0.48);
+    }
+
+    .spin-btn:disabled {
+      cursor: default;
+      opacity: 0.65;
+      box-shadow: none;
+    }
+
+    .wedge-readout {
+      min-height: 2.6rem;
+      min-width: 240px;
+      border-radius: 12px;
+      border: 1px solid #8b5a2b;
+      background: linear-gradient(180deg, rgba(42, 26, 18, 0.9), rgba(27, 18, 10, 0.95));
+      color: #f4e9d5;
+      padding: 0.6rem 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    @media (max-width: 780px) {
+      .game-shell {
+        padding: 1.6rem 1rem 1.8rem;
+      }
+      .wheel-row {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+      .panel {
+        width: 100%;
+      }
+      .wheel-wrapper {
+        width: min(320px, 100%);
+      }
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 1.2rem;
+      }
+      .subtitle {
+        font-size: 0.9rem;
+      }
+      .label {
+        font-size: 0.72rem;
+      }
+      #phrase {
+        font-size: 1.1rem;
+        letter-spacing: 0.28em;
+      }
+      #letters {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .letter {
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.85rem;
+      }
+      .wheel-wrapper {
+        width: min(260px, 100%);
+      }
+      #wheel {
+        width: 260px;
+        height: 260px;
+      }
+      .spin-btn {
+        width: 100%;
+      }
+      .wedge-readout {
+        width: 100%;
+        max-width: 260px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="tv-frame">
+    <div class="tv-screen">
+      <div class="tv-title">The Legend of Peso Jack</div>
+      <div class="pixel-scene" id="pixel-scene">
+        <div class="desert-sun"></div>
+        <div class="cactus" style="left: 8%; height: 58px;"></div>
+        <div class="cactus" style="left: 24%; height: 68px;"></div>
+        <div class="cactus" style="left: 44%; height: 60px;"></div>
+        <div class="cactus" style="left: 64%; height: 72px;"></div>
+        <div class="cactus" style="left: 82%; height: 54px;"></div>
+        <div class="rock" style="left: 22%; bottom: 12px;"></div>
+        <div class="rock" style="left: 52%; bottom: 16px;"></div>
+        <div class="rock" style="left: 74%; bottom: 10px;"></div>
+        <div class="pixel-sprite" aria-hidden="true"></div>
+      </div>
+      <div class="tv-blackout" id="tv-blackout"></div>
+      <div class="guitar-overlay" id="guitar-overlay"></div>
+      <div class="story-scroll" id="story-scroll">
+        The sun dipped low over the California coast as a rugged vagabond rode the cliffside trail, his guitar strapped
+        across his back like a second spine. Dust clung to his coat, salt to his hair, and the wind carried the low hum
+        of the Pacific below.<br><br>
+        They called him Peso Jack, a wanderer who followed stories more than roads.<br><br>
+        At a narrow overlook, something fluttered beneath a stone — a scrap of parchment, placed with care but no
+        footprints around it. Jack opened it.<br><br>
+        “Five words guard what you seek.<br>
+        Find them, and the path will reveal itself.”<br><br>
+        Beneath the message, a strange symbol: a circle split by a single line, as if marking something hollow…
+        something waiting.<br><br>
+        Jack pocketed the note, mounted up, and rode on.<br><br>
+        The puzzle had found him — and the journey had begun.<br><br>
+        Help Peso Jack uncover the hidden phrase and unlock the next chapter of his adventure.<br><br>
+        Who will be the hero Player 1: Mom or Player 2: PaPa?
+      </div>
+    </div>
+    <div class="story-controls">
+      <button class="story-btn" id="pause-story">Pause Scroll</button>
+      <button class="story-btn" id="play-story">Play Scroll</button>
+      <button class="story-btn" id="rewind-story">Rewind</button>
+    </div>
+  </div>
+
+  <div class="game-shell">
+    <h1>Peso Jack's Wheel Of Destiny</h1>
+    <p class="subtitle">Two riders take turns: spin the wheel, guess a letter, win the loot.</p>
+
+    <div class="scoreboard">
+      <div class="cowpoke" id="player-0">
+        <div class="cowpoke-label">Player 1: Mom</div>
+        <div class="cowpoke-score" id="score-0">0</div>
+      </div>
+      <div class="cowpoke" id="player-1">
+        <div class="cowpoke-label">Player 2: PaPa</div>
+        <div class="cowpoke-score" id="score-1">0</div>
+      </div>
+    </div>
+
+    <div class="panel spacer">
+      <div class="label">Puzzle Phrase</div>
+      <span id="phrase"></span>
+    </div>
+
+    <div style="height: 40px;"></div>
+
+    <div class="wheel-row">
+      <div>
+        <div class="wheel-wrapper">
+          <div class="pointer">▼</div>
+          <canvas id="wheel" width="360" height="360"></canvas>
+          <div class="wheel-center">Spin</div>
+        </div>
+        <div style="height: 20px;"></div>
+        <div class="wheel-actions">
+          <button id="spin" class="spin-btn">Spin Wheel</button>
+          <div id="wedge" class="wedge-readout">Waiting to spin…</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="label">Choose a Letter</div>
+        <div id="letters"></div>
+      </div>
+    </div>
+
+    <div class="status-row">
+      <div id="status">Spin the wheel to start.</div>
+      <button id="reset">Reset Puzzle</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const PHRASE = "THE ANSWER IS HIDDEN IN MY HOLLOW CHAMBER";
+      const WEDGES = [
+        "Bankrupt",
+        "Lose A Turn",
+        "Bite A Lemon",
+        "Have A Cookie",
+        "Snack Time",
+        "Go On Vacation",
+        "Hug A Grandkid",
+        "Do A Dance",
+      ];
+      const PRIZE_PER_LETTER = 500;
+
+      const phraseEl = document.getElementById("phrase");
+      const lettersEl = document.getElementById("letters");
+      const statusEl = document.getElementById("status");
+      const resetBtn = document.getElementById("reset");
+      const spinBtn = document.getElementById("spin");
+      const wedgeReadout = document.getElementById("wedge");
+      const wheelCanvas = document.getElementById("wheel");
+      const playerEls = [document.getElementById("player-0"), document.getElementById("player-1")];
+      const scoreEls = [document.getElementById("score-0"), document.getElementById("score-1")];
+      const storyEl = document.getElementById("story-scroll");
+      const pauseStoryBtn = document.getElementById("pause-story");
+      const playStoryBtn = document.getElementById("play-story");
+      const rewindStoryBtn = document.getElementById("rewind-story");
+      const pixelScene = document.getElementById("pixel-scene");
+      const blackoutEl = document.getElementById("tv-blackout");
+      const guitarEl = document.getElementById("guitar-overlay");
+
+      const ctx = wheelCanvas.getContext("2d");
+      const radius = wheelCanvas.width / 2;
+      const sliceAngle = (2 * Math.PI) / WEDGES.length;
+      
+      const sliceColors = [
+        "#000000", // Bankrupt
+        "#d97706",
+        "#a16207",
+        "#92400e",
+        "#fbbf24",
+        "#b45309",
+        "#a855f7",
+        "#d946ef",
+      ];
+
+      let guessed = new Set();
+      let scores = [0, 0];
+      let currentPlayer = 0;
+      let spinning = false;
+      let canGuess = false;
+      let currentRotation = 0;
+      let guitarTimeout;
+
+      function drawWheel() {
+        ctx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
+        // place text closer to the outer edge to leave breathing room around the center medallion
+        const textRadius = radius * 0.96;
+        const textMaxWidth = radius * 0.7; // loosen width so labels can scale up
+        // find the largest uniform font size that fits all labels
+        let fontSize = 30;
+        while (fontSize > 10) {
+          ctx.font = `bold ${fontSize}px 'Rockwell', 'Times New Roman', serif`;
+          const tooWide = WEDGES.some((label) => ctx.measureText(label).width > textMaxWidth);
+          if (!tooWide) break;
+          fontSize -= 1;
+        }
+        WEDGES.forEach((label, i) => {
+          const start = i * sliceAngle;
+          const end = start + sliceAngle;
+          ctx.beginPath();
+          ctx.moveTo(radius, radius);
+          ctx.arc(radius, radius, radius - 4, start, end);
+          ctx.closePath();
+          ctx.fillStyle = sliceColors[i % sliceColors.length];
+          ctx.fill();
+
+          // text
+          ctx.save();
+          ctx.translate(radius, radius);
+          ctx.rotate(start + sliceAngle / 2);
+          ctx.textAlign = "right";
+          ctx.textBaseline = "middle";
+          ctx.fillStyle = i === 0 ? "#ffffff" : "#1b120a";
+          ctx.font = `bold ${fontSize}px 'Rockwell', 'Times New Roman', serif`;
+          ctx.fillText(label, textRadius, 0);
+          ctx.restore();
+        });
+      }
+
+      function renderPhrase() {
+        const display = PHRASE.split("").map((ch) => {
+          if (ch === " ") return " ";
+          const upper = ch.toUpperCase();
+          return guessed.has(upper) ? upper : "_";
+        });
+        phraseEl.textContent = display.join("");
+      }
+
+      function checkSolved() {
+        for (const ch of PHRASE) {
+          if (ch === " ") continue;
+          if (!guessed.has(ch.toUpperCase())) return false;
+        }
+        return true;
+      }
+
+      function setSolvedUI() {
+        statusEl.textContent = `Solved! Player ${currentPlayer + 1} claims the treasure.`;
+        statusEl.classList.add("solved");
+        lettersEl.querySelectorAll("button").forEach((btn) => (btn.disabled = true));
+        spinBtn.disabled = true;
+        canGuess = false;
+        storyEl.classList.add("fade-out");
+        blackoutEl.classList.add("show");
+        if (guitarTimeout) clearTimeout(guitarTimeout);
+        guitarTimeout = setTimeout(() => {
+          guitarEl.classList.add("show");
+        }, 800);
+      }
+
+      function setUnsolvedUI(text) {
+        statusEl.textContent = text;
+        statusEl.classList.remove("solved");
+      }
+
+      function updateScores() {
+        scoreEls.forEach((el, idx) => (el.textContent = scores[idx]));
+      }
+
+      function highlightCurrentPlayer() {
+        playerEls.forEach((el, idx) => {
+          if (idx === currentPlayer) {
+            el.classList.add("active-player");
+          } else {
+            el.classList.remove("active-player");
+          }
+        });
+      }
+
+      function switchPlayer(reason = "") {
+        currentPlayer = currentPlayer === 0 ? 1 : 0;
+        highlightCurrentPlayer();
+        const prefix = reason ? `${reason} ` : "";
+        setUnsolvedUI(`${prefix}Player ${currentPlayer + 1}, your turn to spin.`);
+        canGuess = false;
+      }
+
+      function handleLetter(letter, button) {
+        if (!canGuess || button.disabled) return;
+        guessed.add(letter);
+        button.disabled = true;
+
+        const hits = PHRASE.split("").filter((ch) => ch === letter).length;
+        if (hits > 0) {
+          scores[currentPlayer] += hits * PRIZE_PER_LETTER;
+          updateScores();
+          renderPhrase();
+          if (checkSolved()) {
+            setSolvedUI();
+            return;
+          }
+          canGuess = false;
+          setUnsolvedUI(
+            `Nice find! ${hits} letter${hits > 1 ? "s" : ""} worth ${hits * PRIZE_PER_LETTER}. Spin again.`
+          );
+        } else {
+          switchPlayer("No hits. Passing the turn.");
+          renderPhrase();
+        }
+      }
+
+      function renderLetters() {
+        lettersEl.innerHTML = "";
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach((letter) => {
+          const btn = document.createElement("button");
+          btn.textContent = letter;
+          btn.className = "letter";
+          btn.disabled = guessed.has(letter);
+          btn.addEventListener("click", () => handleLetter(letter, btn));
+          lettersEl.appendChild(btn);
+        });
+      }
+
+      function evaluateWedge(index) {
+        const wedge = WEDGES[index];
+        wedgeReadout.textContent = `Landed on: ${wedge}`;
+
+        if (wedge === "Bankrupt") {
+          scores[currentPlayer] = 0;
+          updateScores();
+          switchPlayer("Bankrupt! All loot lost.");
+        } else if (wedge === "Lose A Turn") {
+          switchPlayer("Lost the turn.");
+        } else {
+          canGuess = true;
+          setUnsolvedUI(`Player ${currentPlayer + 1}, you landed on "${wedge}". Guess a consonant to earn ${PRIZE_PER_LETTER} per hit.`);
+        }
+      }
+
+      function spinWheel() {
+        if (spinning) return;
+        spinning = true;
+        canGuess = false;
+        spinBtn.disabled = true;
+        setUnsolvedUI(`Player ${currentPlayer + 1} is spinning...`);
+
+        const rotations = 4 + Math.random() * 4; // between 4 and 8 spins
+        const extraDegrees = Math.random() * 360;
+        const targetRotation = currentRotation + rotations * 360 + extraDegrees;
+        const duration = 3200 + Math.random() * 800;
+
+        const start = performance.now();
+        function animate(now) {
+          const elapsed = now - start;
+          const t = Math.min(elapsed / duration, 1);
+          // ease out cubic
+          const eased = 1 - Math.pow(1 - t, 3);
+          const angle = currentRotation + (targetRotation - currentRotation) * eased;
+          wheelCanvas.style.transform = `rotate(${angle}deg)`;
+          if (t < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            currentRotation = angle % 360;
+            const sliceDeg = 360 / WEDGES.length;
+            const pointerDeg = 270; // top of the wheel
+            const normalized = ((pointerDeg - (currentRotation % 360)) + 360) % 360;
+            const index = Math.floor(normalized / sliceDeg + 1e-6) % WEDGES.length;
+            evaluateWedge(index);
+            spinning = false;
+            spinBtn.disabled = false;
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+
+      function resetGame() {
+        guessed = new Set();
+        scores = [0, 0];
+        currentPlayer = 0;
+        spinning = false;
+        canGuess = false;
+        currentRotation = 0;
+        if (guitarTimeout) clearTimeout(guitarTimeout);
+        blackoutEl.classList.remove("show");
+        guitarEl.classList.remove("show");
+        storyEl.classList.remove("fade-out");
+        wheelCanvas.style.transform = "rotate(0deg)";
+        wedgeReadout.textContent = "Waiting to spin…";
+        updateScores();
+        renderPhrase();
+        renderLetters();
+        highlightCurrentPlayer();
+        spinBtn.disabled = false;
+        setUnsolvedUI("Spin the wheel to start.");
+      }
+
+      drawWheel();
+      renderLetters();
+      renderPhrase();
+      highlightCurrentPlayer();
+
+      spinBtn.addEventListener("click", spinWheel);
+      resetBtn.addEventListener("click", resetGame);
+      pauseStoryBtn.addEventListener("click", () => {
+        storyEl.classList.add("paused");
+      });
+      playStoryBtn.addEventListener("click", () => {
+        storyEl.classList.remove("paused");
+      });
+      rewindStoryBtn.addEventListener("click", () => {
+        // restart the animation from the top
+        storyEl.classList.remove("paused");
+        storyEl.style.animation = "none";
+        // force reflow to restart animation
+        // eslint-disable-next-line no-unused-expressions
+        storyEl.offsetWidth;
+        storyEl.style.animation = "";
+      });
+    })();
+  </script>
+</body>
+</html>
+
