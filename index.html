@@ -1487,15 +1487,18 @@
       });
       rewindStoryBtn.addEventListener("click", () => {
         let anim = getStoryAnimation();
-        if (!anim || anim.playState === "finished") {
+        if (!anim) {
           restartStoryAnimation();
           anim = getStoryAnimation();
         }
         if (anim) {
-          const currentTime = anim.currentTime || 0;
+          const duration = anim.effect && anim.effect.getComputedTiming().duration
+            ? anim.effect.getComputedTiming().duration
+            : STORY_DURATION_MS;
+          const currentTime = anim.currentTime != null ? anim.currentTime : duration;
           anim.pause();
-          anim.playbackRate = -1;
           anim.currentTime = currentTime;
+          anim.playbackRate = -1;
           anim.play();
         }
         storyEl.classList.remove("fade-out");
