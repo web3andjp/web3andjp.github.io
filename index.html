@@ -1393,6 +1393,15 @@
         if (cowboyDancer) cowboyDancer.classList.add("show");
         startMoneyRain();
         playWinAudio();
+        if (finalCall) {
+          finalCall.classList.remove("show");
+          finalCall.style.display = "none";
+        }
+        if (finalCallTimeout) {
+          clearTimeout(finalCallTimeout);
+          finalCallTimeout = null;
+        }
+        finalCallShown = true;
       }
 
       function setUnsolvedUI(text) {
@@ -1857,7 +1866,11 @@
           if (finalCall) {
             finalCall.classList.remove("show");
             finalCall.style.display = "none";
-            finalCallShown = false;
+            finalCallShown = true;
+          }
+          if (finalCallTimeout) {
+            clearTimeout(finalCallTimeout);
+            finalCallTimeout = null;
           }
         });
       }
