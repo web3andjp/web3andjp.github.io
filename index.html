@@ -347,6 +347,70 @@
       animation-play-state: paused;
     }
 
+    .final-call {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #fcd34d;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      font-size: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 9;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+      animation: flicker 2s ease-in-out infinite;
+      transition: opacity 0.8s ease;
+      display: none;
+    }
+
+    .final-call.show {
+      opacity: 1;
+      display: grid;
+    }
+
+    .cowboy-dancer {
+      position: absolute;
+      bottom: 8px;
+      right: 8%;
+      width: 220px;
+      height: 260px;
+      background: url("cowboy-9875212_1280.png") bottom center/contain no-repeat;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 22;
+      transform-origin: 50% 100%;
+      transition: opacity 0.4s ease;
+      animation: cowboyDance 1.8s infinite ease-in-out;
+    }
+
+    .cowboy-dancer.show {
+      opacity: 1;
+    }
+
+    @keyframes cowboyDance {
+      0% {
+        transform: translateY(0) rotate(-2deg) scale(1);
+      }
+      25% {
+        transform: translateY(-8px) rotate(2deg) scale(1.02);
+      }
+      50% {
+        transform: translateY(-4px) rotate(-1deg) scale(0.98);
+      }
+      75% {
+        transform: translateY(-10px) rotate(3deg) scale(1.03);
+      }
+      100% {
+        transform: translateY(0) rotate(-2deg) scale(1);
+      }
+    }
+    @keyframes flicker {
+      0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+      20%, 24%, 55% { opacity: 0.5; }
+    }
+
 
     .story-controls {
       display: flex;
@@ -408,12 +472,12 @@
       background: url("cowboy-horse.png") center/contain no-repeat;
       image-rendering: pixelated;
       animation: rideAcross 14s linear forwards;
-      animation-delay: 3s;
+      animation-delay: 1s;
       animation-fill-mode: forwards;
       opacity: 0;
-      left: 50%;
+      left: -200px;
       bottom: 12px;
-      transform: translateX(-50%);
+      transform: translateX(0);
       z-index: 5;
       animation-play-state: paused;
     }
@@ -541,42 +605,6 @@
       }
     }
 
-    .cowboy-dancer {
-      position: absolute;
-      bottom: 8px;
-      right: 8%;
-      width: 220px;
-      height: 260px;
-      background: url("cowboy-9875212_1280.png") bottom center/contain no-repeat;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 22;
-      transform-origin: 50% 100%;
-      transition: opacity 0.4s ease;
-      animation: cowboyDance 1.8s infinite ease-in-out;
-    }
-
-    .cowboy-dancer.show {
-      opacity: 1;
-    }
-
-    @keyframes cowboyDance {
-      0% {
-        transform: translateY(0) rotate(-2deg) scale(1);
-      }
-      25% {
-        transform: translateY(-8px) rotate(2deg) scale(1.02);
-      }
-      50% {
-        transform: translateY(-4px) rotate(-1deg) scale(0.98);
-      }
-      75% {
-        transform: translateY(-10px) rotate(3deg) scale(1.03);
-      }
-      100% {
-        transform: translateY(0) rotate(-2deg) scale(1);
-      }
-    }
 
 
     .desert-sun {
@@ -686,15 +714,15 @@
 
     @keyframes rideAcross {
       0% {
-        transform: translateX(-380px);
+        transform: translateX(0);
         opacity: 1;
       }
       80% {
-        transform: translateX(380px);
+        transform: translateX(1200px);
         opacity: 1;
       }
       100% {
-        transform: translateX(460px);
+        transform: translateX(1400px);
         opacity: 0;
       }
     }
@@ -993,39 +1021,40 @@
         <div class="pixel-sprite" id="pixel-sprite" aria-hidden="true"></div>
       </div>
       <div class="tv-blackout" id="tv-blackout"></div>
-      <video id="celebration-video" class="tv-video" preload="auto" playsinline muted loop>
-        <source src="vecteezy_dance_transparent_whitekey.webm" type="video/webm" />
-      </video>
       <div class="money-rain" id="money-rain"></div>
       <div class="cowboy-dancer" id="cowboy-dancer" aria-hidden="true"></div>
       <div class="guitar-overlay" id="guitar-overlay">
-        <div class="guitar-note">Check the guitar chamber of Peso John</div>
+        <div class="guitar-note" id="guitar-note">Check the guitar chamber of Peso John</div>
       </div>
       <div class="story-scroll" id="story-scroll">
-        The sun bled gold over the California cliffs as a dusty wanderer rode the edge of the world, saddlebags heavy
-        with questions instead of loot. Peso Jack traveled light, keeping only a sun-faded bandana from his cousin Peso
-        John a six-string legend who had just lost his last duel with dysentery. The memory of John's final riff still
-        haunted the wind that whipped off the Pacific.<br><br>
-        They called Jack a story-chaser, a man who collected whispers instead of gold. Tonight, the breeze carried one
-        straight to him.<br><br>
-        At a narrow overlook, something fluttered beneath a stone—a scrap of parchment, placed with care but no
-        footprints around it. Jack opened it.<br><br>
+        The sun bled out over the California cliffs, a long slow spill of gold on rock and water, while a dusty wanderer
+        rode along the edge of the world with saddlebags full of questions and not much else. He was called Peso Jack.
+        He traveled light and liked it that way, keeping only a sun-faded bandana from his cousin Peso John, a
+        six-string legend who had lately lost his final contest with dysentery. The memory of John’s last ragged riff
+        still seemed to hang in the wind that came hard off the Pacific.<br><br>
+        People said Jack was a story-chaser, a man who collected rumors and half-truths the way other men collected
+        coins. That evening, the breeze brought him one more.<br><br>
+        At a narrow overlook he saw something flutter under a stone—a scrap of parchment, set there deliberate, with no
+        hoofprint or boot mark near it. Jack swung down, picked it up, and unfolded it.<br><br>
         “Eight words guard what you seek.<br>
         Find them, and the path will reveal itself.”<br><br>
-        Beneath the message, a strange symbol: a circle split by a single line, as if marking something hollow…
-        something waiting.<br><br>
-        Jack pocketed the note, touched the worn bandana at his wrist in John's honor, and rode on. If his cousin's
-        ghost could still sing, Jack would make sure the song reached the right ears.<br><br>
-        The puzzle had found him—and the journey had begun.<br><br>
-        Help Peso Jack uncover the hidden phrase and unlock the next chapter of his adventure.<br><br>
+        Beneath the lines someone had inked a curious mark: a circle split by a single stroke, like a sign for something
+        hollow inside, something waiting to be found.<br><br>
+        Jack slipped the note into his coat, touched the worn bandana at his wrist in John’s honor, and climbed back
+        into the saddle. If his cousin’s ghost still had a song left in it, Jack meant to see it carried to the right
+        ears.<br><br>
+        The puzzle had not asked his permission. It had simply arrived.<br><br>
+        Now it was his, and the journey had begun.<br><br>
+        Help Peso Jack uncover the hidden phrase and unlock the next chapter of his ride.<br><br>
         Who will be the hero?<br><br>
         Player 1: Mom<br><br>
         Player 2: PaPa
       </div>
+      <div class="final-call" id="final-call">Press Start Game to Begin</div>
     </div>
     <div class="story-controls">
       <button class="story-btn" id="start-show">Start Show</button>
-      <button class="story-btn" id="start-game">Start Game</button>
+      <button class="story-btn hidden" id="start-game">Start Game</button>
       <button class="story-btn" id="pause-story">Pause Scroll</button>
       <button class="story-btn" id="play-story">Play Scroll</button>
       <button class="story-btn hidden" id="rewind-story" aria-hidden="true" tabindex="-1">Rewind</button>
@@ -1125,9 +1154,10 @@
       const winAudio = document.getElementById("win-audio");
       const ohNoAudio = document.getElementById("ohno-audio");
       const tvScreen = document.getElementById("tv-screen");
-      const celebrationVideo = document.getElementById("celebration-video");
       const moneyRain = document.getElementById("money-rain");
+      const finalCall = document.getElementById("final-call");
       const cowboyDancer = document.getElementById("cowboy-dancer");
+      const guitarNote = document.getElementById("guitar-note");
       const PLAYER_NAMES = ["Mom", "Papa"];
       const titleEl = document.querySelector(".tv-title");
       let storyStarted = false;
@@ -1201,6 +1231,8 @@
       let canGuess = false;
       let currentRotation = 0;
       let guitarTimeout;
+      let finalCallTimeout;
+      let finalCallShown = false;
 
       function drawWheel() {
         ctx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
@@ -1275,10 +1307,9 @@
         guitarTimeout = setTimeout(() => {
           guitarEl.classList.add("show");
         }, 800);
-        if (celebrationVideo) {
-          celebrationVideo.classList.add("show");
-          celebrationVideo.currentTime = 0;
-          celebrationVideo.play().catch(() => {});
+        const otherPlayer = currentPlayer === 0 ? PLAYER_NAMES[1] : PLAYER_NAMES[0];
+        if (guitarNote) {
+          guitarNote.innerHTML = `Congratulations, ${PLAYER_NAMES[currentPlayer]}! ${otherPlayer} hopes you are the sharin' kind!<br><br>Check the guitar chamber of Peso John`;
         }
         if (cowboyDancer) cowboyDancer.classList.add("show");
         startMoneyRain();
@@ -1432,11 +1463,6 @@
         blackoutEl.classList.remove("show");
         guitarEl.classList.remove("show");
         if (tvScreen) tvScreen.classList.remove("story-bg");
-        if (celebrationVideo) {
-          celebrationVideo.classList.remove("show");
-          celebrationVideo.pause();
-          celebrationVideo.currentTime = 0;
-        }
         if (pixelScene) {
           pixelScene.style.animation = "";
           pixelScene.style.opacity = "";
@@ -1453,6 +1479,15 @@
         const gameShell = document.querySelector(".game-shell");
         if (gameShell) gameShell.classList.remove("solved-compact");
         stopMoneyRain();
+        if (finalCall) {
+          finalCall.classList.remove("show");
+          finalCall.style.display = "none";
+        }
+        if (finalCallTimeout) {
+          clearTimeout(finalCallTimeout);
+          finalCallTimeout = null;
+        }
+        finalCallShown = false;
         if (cowboyDancer) cowboyDancer.classList.remove("show");
       }
 
@@ -1468,9 +1503,6 @@
         if (anim) anim.pause();
         storyEl.classList.add("paused");
         if (westernAudio) westernAudio.pause();
-        if (celebrationVideo && !celebrationVideo.paused) {
-          celebrationVideo.pause();
-        }
       });
       playStoryBtn.addEventListener("click", () => {
         const anim = getStoryAnimation();
@@ -1484,9 +1516,6 @@
         storyEl.classList.remove("paused");
         if (westernAudio && westernPlayCount > 0) {
           westernAudio.play().catch(() => {});
-        }
-        if (celebrationVideo && celebrationVideo.paused && celebrationVideo.classList.contains("show")) {
-          celebrationVideo.play().catch(() => {});
         }
       });
       rewindStoryBtn.addEventListener("click", () => {
@@ -1514,6 +1543,12 @@
         if (event.animationName !== "titleReturn" || storyStarted) return;
         storyStarted = true;
         storyDirectionForward = true;
+        finalCallShown = false;
+        if (finalCall) {
+          finalCall.classList.remove("show");
+          finalCall.style.display = "none";
+        }
+        if (finalCallTimeout) clearTimeout(finalCallTimeout);
         const anim = getStoryAnimation();
         if (anim) {
           anim.playbackRate = 1;
@@ -1523,6 +1558,16 @@
         }
         if (westernFadeTimeout) clearTimeout(westernFadeTimeout);
         westernFadeTimeout = setTimeout(() => fadeWesternAudio(5000), STORY_DURATION_MS - 5000);
+        // show final call near end of scroll and pause there
+        finalCallTimeout = setTimeout(() => {
+          if (finalCall && !finalCallShown) {
+            finalCallShown = true;
+            finalCall.style.display = "grid";
+            finalCall.classList.add("show");
+            storyEl.classList.add("paused");
+            storyEl.style.animationPlayState = "paused";
+          }
+        }, STORY_DURATION_MS * 0.65);
       });
 
       storyEl.addEventListener("animationend", (event) => {
@@ -1538,6 +1583,13 @@
               pixelScene.style.animation = "none";
               pixelScene.style.opacity = "1";
             }
+            if (finalCall && !finalCallShown) {
+              finalCallShown = true;
+              finalCall.style.display = "grid";
+              finalCall.classList.add("show");
+            }
+            storyEl.classList.add("paused");
+            storyEl.style.animationPlayState = "paused";
           }
         }
       });
@@ -1716,12 +1768,18 @@
             horseEl.classList.add("animate");
           }
           playWildAudio();
+          if (startGameBtn) startGameBtn.classList.remove("hidden");
         });
       }
 
       if (startGameBtn) {
         startGameBtn.addEventListener("click", () => {
           revealGameShell();
+          if (finalCall) {
+            finalCall.classList.remove("show");
+            finalCall.style.display = "none";
+            finalCallShown = false;
+          }
         });
       }
 
