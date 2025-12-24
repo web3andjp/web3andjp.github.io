@@ -1498,6 +1498,8 @@
           anim.currentTime = currentTime;
           anim.play();
         }
+        storyEl.classList.remove("fade-out");
+        storyEl.style.opacity = "1";
         storyDirectionForward = false;
         storyEl.style.animationDirection = "reverse";
         storyEl.style.animationPlayState = "running";
