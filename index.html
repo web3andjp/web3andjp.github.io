@@ -967,7 +967,6 @@
   <audio id="fail-audio" src="fail-trumpet-242645.mp3" preload="auto"></audio>
   <audio id="win-audio" src="country-happiness-playful-catch-283156.mp3" preload="auto"></audio>
   <audio id="ohno-audio" src="human-voice-saying-oh-no-301694.mp3" preload="auto"></audio>
-  <audio id="yes-audio" src="yes-laugh-82035.mp3" preload="auto"></audio>
 
   <div class="tv-frame tall">
     <div class="tv-screen" id="tv-screen">
@@ -1125,7 +1124,6 @@
       const failAudio = document.getElementById("fail-audio");
       const winAudio = document.getElementById("win-audio");
       const ohNoAudio = document.getElementById("ohno-audio");
-      const yesAudio = document.getElementById("yes-audio");
       const tvScreen = document.getElementById("tv-screen");
       const celebrationVideo = document.getElementById("celebration-video");
       const moneyRain = document.getElementById("money-rain");
@@ -1377,11 +1375,6 @@
           playOhNoAudio();
           canGuess = true;
           setUnsolvedUI(`${PLAYER_NAMES[currentPlayer]}, you hit "Bite A Lemon". Guess a letter to earn ${PRIZE_PER_LETTER} per hit.`);
-          spinBtn.disabled = true;
-        } else if (["Snack Time", "Have A Cookie", "Go On Vacation", "Hug A Grandkid", "Do A Dance"].includes(wedge)) {
-          playYesAudio();
-          canGuess = true;
-          setUnsolvedUI(`${PLAYER_NAMES[currentPlayer]}, you hit "${wedge}". Guess a letter to earn ${PRIZE_PER_LETTER} per hit.`);
           spinBtn.disabled = true;
         } else {
           lastBankruptPlayer = null;
@@ -1654,12 +1647,6 @@
         ohNoAudio.play().catch(() => {});
       }
 
-      function playYesAudio() {
-        if (!yesAudio) return;
-        yesAudio.currentTime = 0;
-        yesAudio.volume = 0.85;
-        yesAudio.play().catch(() => {});
-      }
 
       function startMoneyRain() {
         if (!moneyRain) return;
