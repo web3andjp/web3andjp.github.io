@@ -1161,6 +1161,15 @@
         return storyAnimation;
       }
 
+      function restartStoryAnimation() {
+        storyAnimation = null;
+        storyEl.style.animation = "none";
+        // force reflow
+        // eslint-disable-next-line no-unused-expressions
+        storyEl.offsetWidth;
+        storyEl.style.animation = "";
+      }
+
       const ctx = wheelCanvas.getContext("2d");
       const radius = wheelCanvas.width / 2;
       const sliceAngle = (2 * Math.PI) / WEDGES.length;
@@ -1477,10 +1486,13 @@
         }
       });
       rewindStoryBtn.addEventListener("click", () => {
-        const anim = getStoryAnimation();
+        let anim = getStoryAnimation();
+        if (!anim || anim.playState === "finished") {
+          restartStoryAnimation();
+          anim = getStoryAnimation();
+        }
         if (anim) {
-          // reverse from the current position without jumping to the start
-          const currentTime = anim.currentTime;
+          const currentTime = anim.currentTime || 0;
           anim.pause();
           anim.playbackRate = -1;
           anim.currentTime = currentTime;
