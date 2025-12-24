@@ -874,7 +874,7 @@
 
     @media (max-width: 780px) {
       .game-shell {
-      padding: 1.2rem 0.9rem 1.4rem;
+        padding: 1.2rem 0.9rem 1.4rem;
       }
       .wheel-row {
         grid-template-columns: 1fr;
@@ -885,6 +885,35 @@
       }
       .wheel-wrapper {
         width: min(320px, 100%);
+      }
+    }
+
+    @media (max-width: 960px) {
+      .tv-frame {
+        width: 100%;
+      }
+      .tv-frame.tall .tv-screen {
+        height: 360px;
+      }
+      .game-shell {
+        width: 100%;
+      }
+      .story-controls {
+        justify-content: center;
+      }
+      .wheel-wrapper {
+        width: min(300px, 100%);
+      }
+      #wheel {
+        width: 300px;
+        height: 300px;
+      }
+      .spin-btn {
+        width: 100%;
+      }
+      .wedge-readout {
+        width: 100%;
+        max-width: 300px;
       }
     }
 
