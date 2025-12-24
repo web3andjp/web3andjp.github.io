@@ -1168,6 +1168,17 @@
         // eslint-disable-next-line no-unused-expressions
         storyEl.offsetWidth;
         storyEl.style.animation = "";
+        storyEl.style.animationPlayState = "running";
+        storyEl.style.animationDirection = "normal";
+      }
+
+      function ensureStoryAnimation() {
+        let anim = getStoryAnimation();
+        if (!anim) {
+          restartStoryAnimation();
+          anim = getStoryAnimation();
+        }
+        return anim;
       }
 
       const ctx = wheelCanvas.getContext("2d");
@@ -1486,19 +1497,14 @@
         }
       });
       rewindStoryBtn.addEventListener("click", () => {
-        let anim = getStoryAnimation();
-        if (!anim) {
-          restartStoryAnimation();
-          anim = getStoryAnimation();
-        }
+        const anim = ensureStoryAnimation();
         if (anim) {
-          const duration = anim.effect && anim.effect.getComputedTiming().duration
-            ? anim.effect.getComputedTiming().duration
-            : STORY_DURATION_MS;
+          const timing = anim.effect && anim.effect.getComputedTiming ? anim.effect.getComputedTiming() : {};
+          const duration = typeof timing.duration === "number" ? timing.duration : STORY_DURATION_MS;
           const currentTime = anim.currentTime != null ? anim.currentTime : duration;
           anim.pause();
-          anim.currentTime = currentTime;
           anim.playbackRate = -1;
+          anim.currentTime = Math.min(currentTime, duration);
           anim.play();
         }
         storyEl.classList.remove("fade-out");
