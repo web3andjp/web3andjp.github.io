@@ -469,7 +469,6 @@
       position: absolute;
       width: 200px;
       height: 190px;
-      background: url("cowboy-horse.png") center/contain no-repeat;
       image-rendering: pixelated;
       animation: rideAcross 14s linear forwards;
       animation-delay: 1s;
@@ -480,6 +479,14 @@
       transform: translateX(0);
       z-index: 5;
       animation-play-state: paused;
+    }
+
+    .pixel-sprite .horse-inner {
+      width: 100%;
+      height: 100%;
+      background: url("cowboy-horse.png") center/contain no-repeat;
+      animation: trotBob 0.5s ease-in-out infinite;
+      transform-origin: center;
     }
 
     .pixel-sprite.animate {
@@ -724,6 +731,24 @@
       100% {
         transform: translateX(1400px);
         opacity: 0;
+      }
+    }
+
+    @keyframes trotBob {
+      0% {
+        transform: translateX(0) translateY(0) rotate(-1deg);
+      }
+      25% {
+        transform: translateX(0) translateY(-3px) rotate(1deg);
+      }
+      50% {
+        transform: translateX(0) translateY(0) rotate(-1deg);
+      }
+      75% {
+        transform: translateX(0) translateY(3px) rotate(1deg);
+      }
+      100% {
+        transform: translateX(0) translateY(0) rotate(-1deg);
       }
     }
 
@@ -1018,7 +1043,9 @@
         <div class="rock" style="left: 22%; bottom: 12px;"></div>
         <div class="rock" style="left: 52%; bottom: 16px;"></div>
         <div class="rock" style="left: 74%; bottom: 10px;"></div>
-        <div class="pixel-sprite" id="pixel-sprite" aria-hidden="true"></div>
+        <div class="pixel-sprite" id="pixel-sprite" aria-hidden="true">
+          <div class="horse-inner"></div>
+        </div>
       </div>
       <div class="tv-blackout" id="tv-blackout"></div>
       <div class="money-rain" id="money-rain"></div>
