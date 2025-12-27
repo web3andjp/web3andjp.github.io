@@ -1196,9 +1196,9 @@
       const WEDGES = [
         "Bankrupt",
         "Lose A Turn",
-        "Bite A Lemon",
+        "Oh, Brenda",
         "Have A Cookie",
-        "Snack Time",
+        "Oh, David",
         "Go On Vacation",
         "Hug A Grandkid",
         "Do A Dance",
@@ -1490,10 +1490,10 @@
           lastBankruptPlayer = null;
           playFailAudio();
           spinBtn.disabled = false;
-        } else if (wedge === "Bite A Lemon") {
+        } else if (wedge === "Oh, Brenda" || wedge === "Oh, David") {
           playOhNoAudio();
           canGuess = true;
-          setUnsolvedUI(`${PLAYER_NAMES[currentPlayer]}, you hit "Bite A Lemon". Guess a letter to earn ${PRIZE_PER_LETTER} per hit.`);
+          setUnsolvedUI(`${PLAYER_NAMES[currentPlayer]}, you hit "${wedge}". Guess a letter to earn ${PRIZE_PER_LETTER} per hit.`);
           spinBtn.disabled = true;
         } else {
           lastBankruptPlayer = null;
