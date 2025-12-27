@@ -1491,6 +1491,9 @@
           playFailAudio();
           spinBtn.disabled = false;
         } else if (wedge === "Oh, Brenda" || wedge === "Oh, David") {
+          currentPlayer = wedge === "Oh, Brenda" ? 0 : 1; // force Mom/Papa turn per slice
+          highlightCurrentPlayer();
+          lastBankruptPlayer = null;
           playOhNoAudio();
           canGuess = true;
           setUnsolvedUI(`${PLAYER_NAMES[currentPlayer]}, you hit "${wedge}". Guess a letter to earn ${PRIZE_PER_LETTER} per hit.`);
